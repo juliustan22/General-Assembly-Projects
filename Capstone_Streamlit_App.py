@@ -1,5 +1,5 @@
 # Package for removing accents from names
-# !pip install unidecode
+!pip install unidecode
 
 # Import Libraries
 import streamlit as st

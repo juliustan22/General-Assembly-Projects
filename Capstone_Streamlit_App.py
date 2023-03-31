@@ -1,3 +1,6 @@
+# Package for removing accents from names
+# !pip install unidecode
+
 # Import Libraries
 import streamlit as st
 import pandas as pd

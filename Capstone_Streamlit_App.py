@@ -1,5 +1,5 @@
 # Package for removing accents from names
-pip install unidecode
+# pip install unidecode
 
 # Import Libraries
 import streamlit as st
@@ -59,8 +59,8 @@ def load_data():
     players['value_eur'].fillna(0, inplace=True)
     
     # Remove accents from names
-    players['short_name'] = players['short_name'].apply(unidecode)
-    players['long_name'] = players['long_name'].apply(unidecode)
+#     players['short_name'] = players['short_name'].apply(unidecode)
+#     players['long_name'] = players['long_name'].apply(unidecode)
 
     # Separate dataset into goalkeepers and outfield players (defenders, midfielders & strikers)
     goalkeepers = players[players['player_positions']=='GK'].copy()

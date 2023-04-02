@@ -96,7 +96,7 @@ def load_data():
 
 rf_gk_model, rf_op_model, goalkeepers, outfieldplayers, players_final = load_data()
 
-# Create 3 tabs
+# Create tabs
 tab1, tab2, tab3, tab4, tab5 = st.tabs(["Intro", "Goalkeepers", "Outfield Players", "Player Profiles", "Price Prediction"])
 
 # Intro tab1
@@ -230,8 +230,8 @@ with tab4:
         goalkeeping_reflexes = player_table.iloc[i]['goalkeeping_reflexes'].astype(int)
         goalkeeping_speed = player_table.iloc[i]['goalkeeping_speed'].astype(int)
 
-        # Create 3 columns for profile
-        col1, col2, col3, col4 = st.columns(4)
+        # Create columns for profile
+        col1, col2, col3, col4, col5 = st.columns([1,2,2,1,1])
 
         # st.number_input(label, min_value=None, max_value=None, value= )
         with col1:
@@ -253,16 +253,19 @@ with tab4:
                 st.write(f'Diving: {goalkeeping_diving}')
                 st.write(f'Handling: {goalkeeping_handling}')
                 st.write(f'Kicking: {goalkeeping_kicking}')
-                st.write(f'Reflexes: {goalkeeping_reflexes}')
-                st.write(f'Speed: {goalkeeping_speed}')
-                st.write(f'Positioning: {goalkeeping_positioning}')
             else:
                 st.write(f'Pace: {pace}')
                 st.write(f'Shooting: {shooting}')
                 st.write(f'Passing: {passing}')
+        with col5:
+            if position == 'GK':
+                st.write(f'Reflexes: {goalkeeping_reflexes}')
+                st.write(f'Speed: {goalkeeping_speed}')
+                st.write(f'Positioning: {goalkeeping_positioning}')
+            else:
                 st.write(f'Dribbling: {dribbling}')
                 st.write(f'Defending: {defending}')
-                st.write(f'Physicality: {physic}')                
+                st.write(f'Physicality: {physic}')
         st.markdown("""---""")
 
 # GK section

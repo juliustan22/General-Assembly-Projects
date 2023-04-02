@@ -1,5 +1,6 @@
 # Import Libraries
 import streamlit as st
+import streamlit.components.v1 as components
 import pandas as pd
 import numpy as np
 from math import sqrt
@@ -10,43 +11,23 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
 # Set Page configuration
 # Read more at https://docs.streamlit.io/1.6.0/library/api-reference/utilities/st.set_page_config
-st.set_page_config(page_title='Football Player Price Prediction ⚽🏃💵', page_icon='⚽', layout='centered')
+st.set_page_config(page_title='Football Player Price Prediction', page_icon='⚽', layout='wide')
 
 # +
-# import streamlit.components.v1 as components
-# def main():
-#     html_temp = “”"your embed code here”“”
-#     components.html(html_temp, height=1000)
-# if __name__ == “__main__“:
-#     main()
+# Set title and picture for app
+# Create 2 columns
+col1, col2 = st.columns([3,1])
 
-# +
-# Set background
-# def set_bg_hack_url():
-#     '''
-#     A function to set background image from a url.
-#     '''
-#     image_url = "https://wallpaper-mania.com/wp-content/uploads/2018/09/High_resolution_wallpaper_background_ID_77702048137.jpg"
-#     st.markdown(
-#         f"""
-#         <style>
-#             .stApp {{
-#                 background-image: url('{image_url}');
-#                 background-size: cover;
-#             }}
-#         </style>
-#         """,
-#         unsafe_allow_html=True
-#     )
+with col1:
+    st.title('Football Player Price Prediction')
+    
+with col2:
+    st.image('https://a4.espncdn.com/combiner/i?img=%2Fphoto%2F2022%2F1109%2Fsoc_fc_rank_16x9.jpg')
 
-# set_bg_hack_url()
+
 # -
 
-# Set title of the app
-st.title('Football Player Price Prediction ⚽🏃💵')
-
-
-# Load data
+# Load data and model
 @st.cache_data()
 def load_data():
     players = pd.read_csv('FIFA_23_Players_Data.csv')
@@ -67,17 +48,18 @@ def load_data():
     outfieldplayers.reset_index(drop=True,inplace=True)
     
     # Get columns for prediction model
-    model_data_goalkeepers = goalkeepers[['value_eur','goalkeeping_diving','goalkeeping_handling','goalkeeping_kicking',
-                                  'goalkeeping_positioning','goalkeeping_reflexes','goalkeeping_speed']].copy()
+    model_data_goalkeepers = goalkeepers[['value_eur','age','goalkeeping_diving','goalkeeping_handling','goalkeeping_kicking',
+                              'goalkeeping_positioning','goalkeeping_reflexes','goalkeeping_speed']].copy()
 
-    model_data_outfieldplayers = outfieldplayers[['value_eur','pace','shooting','passing',
+    model_data_outfieldplayers = outfieldplayers[['value_eur','age','pace','shooting','passing',
                                               'dribbling','defending','physic']].copy()
     
     # GK Random Forest Regression
     X = model_data_goalkeepers.drop(['value_eur'], axis=1)
     y = model_data_goalkeepers['value_eur']
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-    rf_gk_model = RandomForestRegressor(n_estimators=100, random_state=42)
+    rf_gk_model = RandomForestRegressor(n_estimators=100, max_depth=None,
+                                    min_samples_split=5, min_samples_leaf=5, random_state=42)
     rf_gk_model.fit(X_train, y_train)
 
     # GK Create column for predictions
@@ -87,7 +69,8 @@ def load_data():
     X = model_data_outfieldplayers.drop(['value_eur'], axis=1)
     y = model_data_outfieldplayers['value_eur']
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-    rf_op_model = RandomForestRegressor(n_estimators=100, random_state=42)
+    rf_op_model = RandomForestRegressor(n_estimators=100, max_depth=None,
+                                    min_samples_split=5, min_samples_leaf=5, random_state=42)
     rf_op_model.fit(X_train, y_train)
 
     # Outfield players Create column for predictions
@@ -113,75 +96,63 @@ def load_data():
 
 rf_gk_model, rf_op_model, goalkeepers, outfieldplayers, players_final = load_data()
 
-# +
-# tab1, tab2 = st.tabs(["Tab 1", "Tab2"])
-# tab1.write("this is tab 1")
+# Create 3 tabs
+tab1, tab2, tab3, tab4, tab5 = st.tabs(["Intro", "Goalkeepers", "Outfield Players", "Player Profiles", "Price Prediction"])
 
+# Intro tab1
+with tab1:
+    st.subheader('Dashboards are filtered for players above 80 Overall Rating to focus on top players.')
 
-# # Most Undervalued Players
-# st.subheader('Most Undervalued Players')
+# Goalkeepers Tableau tab2
+with tab2:
+    def main():
+        html_temp = """<div class='tableauPlaceholder' id='viz1680441144546' 
+        style='position: relative'><noscript><a href='#'><img alt='Goalkeepers ' 
+        src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Go&#47;Goalkeepers_16804303938650&#47;Goalkeepers&#47;1_rss.png' 
+        style='border: none' /></a></noscript><object class='tableauViz'  style='display:none;'><param name='host_url' 
+        value='https%3A%2F%2Fpublic.tableau.com%2F' /> <param name='embed_code_version' value='3' /> <param name='site_root' value='' 
+        /><param name='name' value='Goalkeepers_16804303938650&#47;Goalkeepers' /><param name='tabs' value='no' /><param name='toolbar' value='yes' 
+        /><param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Go&#47;Goalkeepers_16804303938650&#47;Goalkeepers&#47;1.png' /> 
+        <param name='animate_transition' value='yes' /><param name='display_static_image' value='yes' /><param name='display_spinner' value='yes' 
+        /><param name='display_overlay' value='yes' /><param name='display_count' value='yes' /><param name='language' value='en-US' 
+        /><param name='filter' value='publish=yes' /></object></div>                
+        <script type='text/javascript'>                    
+        var divElement = document.getElementById('viz1680441144546');                    
+        var vizElement = divElement.getElementsByTagName('object')[0];                    
+        if ( divElement.offsetWidth > 800 ) 
+        { vizElement.style.width='100%';vizElement.style.height=(divElement.offsetWidth*0.5)+'px';} 
+        else if ( divElement.offsetWidth > 500 ) { vizElement.style.width='100%';vizElement.style.height=(divElement.offsetWidth*0.75)+'px';} else { vizElement.style.width='100%';vizElement.style.height='2077px';}                     var scriptElement = document.createElement('script');                    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    vizElement.parentNode.insertBefore(scriptElement, vizElement);                </script>"""
+        components.html(html_temp, width=None, height=1000, scrolling=False)
+    if __name__ == "__main__":    
+        main()
 
-# st.dataframe(goalkeepers.sort_values(by='Over/Under Value').head())
+# Outfield Players Tableau tab3
+with tab3:
+    def main():
+        html_temp = """<div class='tableauPlaceholder' id='viz1680441224329' 
+        style='position: relative'><noscript><a href='#'><img alt='Outfield Players ' 
+        src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Ou&#47;OutfieldPlayers&#47;OutfieldPlayers&#47;1_rss.png' 
+        style='border: none' /></a></noscript><object class='tableauViz'  style='display:none;'><param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> 
+        <param name='embed_code_version' value='3' /> <param name='site_root' value='' /><param name='name' value='OutfieldPlayers&#47;OutfieldPlayers' /><param name='tabs' value='no' 
+        /><param name='toolbar' value='yes' /><param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Ou&#47;OutfieldPlayers&#47;OutfieldPlayers&#47;1.png' /> 
+        <param name='animate_transition' value='yes' /><param name='display_static_image' value='yes' /><param name='display_spinner' value='yes' /><param name='display_overlay' value='yes' /><param name='display_count' 
+        value='yes' /><param name='language' value='en-US' /><param name='filter' value='publish=yes' /></object></div>                
+        <script type='text/javascript'>                    
+        var divElement = document.getElementById('viz1680441224329');                    
+        var vizElement = divElement.getElementsByTagName('object')[0];                    
+        if ( divElement.offsetWidth > 800 ) 
+        { vizElement.style.width='100%';vizElement.style.height=(divElement.offsetWidth*0.5)+'px';} else if ( divElement.offsetWidth > 500 ) { vizElement.style.width='100%';vizElement.style.height=(divElement.offsetWidth*0.75)+'px';} else { vizElement.style.width='100%';vizElement.style.height='2077px';}                     var scriptElement = document.createElement('script');                    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    vizElement.parentNode.insertBefore(scriptElement, vizElement);                </script>"""
+        components.html(html_temp, width=None, height=1000, scrolling=False)
+    if __name__ == "__main__":    
+        main()
 
-# +
-# GK section
-# Set input widgets
-st.header('Goalkeeper Price Prediction')
-st.subheader('Select Attributes')
-
-# Create 6 columns for sliders
-col1, col2, col3, col4, col5, col6 = st.columns(6)
-
-# st.number_input(label, min_value=None, max_value=None, value= )
-diving = col1.slider('Diving', 0, 99, 50)
-handling = col2.slider('Handling', 0, 99, 50)
-kicking = col3.slider('Kicking', 0, 99, 50)
-positioning = col4.slider('Positioning', 0, 99, 50)
-reflexes = col5.slider('Reflexes', 0, 99, 50)
-speed = col6.slider('Speed', 0, 99, 50)
-
-# Generate prediction based on user selected attributes
-y_pred_gk = rf_gk_model.predict([[diving, handling, kicking, positioning, reflexes, speed]]).astype(int)
-
-st.metric('Predicted Price for Goalkeeper:', f'€ {y_pred_gk[0]:,}')
-
-# +
-# Outfield Players section
-# Set input widgets
-st.header('Outfield Player Price Prediction (Defender/Midfielder/Striker)')
-st.subheader('Select Attributes')
-
-# Create 6 columns for sliders
-col1, col2, col3, col4, col5, col6 = st.columns(6)
-
-# st.number_input(label, min_value=None, max_value=None, value= )
-pace = col1.slider('Pace', 0, 99, 50)
-shooting = col2.slider('Shooting', 0, 99, 50)
-passing = col3.slider('Passing', 0, 99, 50)
-dribbling = col4.slider('Dribbling', 0, 99, 50)
-defending = col5.slider('Defending', 0, 99, 50)
-physicality = col6.slider('Physicality', 0, 99, 50)
-
-# Outfield players
-y_pred_op = rf_op_model.predict([[pace, shooting, passing, dribbling, defending, physicality]]).astype(int)
-
-st.metric('Predicted Price for Outfield Player:', f'€ {y_pred_op[0]:,}')
-
-# +
-# Display EDA
-# st.subheader('Exploratory Data Analysis')
-# st.write('The data is grouped by the class and the variable mean is computed for each class.')
-# groupby_species_mean = df.groupby('Species').mean()
-# st.write(groupby_species_mean)
-# st.bar_chart(groupby_species_mean.T)
-
-# +
 # Player Profiles section
-st.subheader('Player Profiles')
+with tab4:
+    st.subheader('Player Profiles')
 
-namelist = players_final['long_name'].tolist()
-selected_players = st.multiselect('Select Players', namelist)
-try:
+    namelist = players_final['long_name'].tolist()
+    selected_players = st.multiselect('Select Players', namelist)
+    
     player_table = players_final[players_final['long_name'].isin(selected_players)]
     for i in range(len(player_table)):
         name = player_table.iloc[i]['long_name']
@@ -193,12 +164,25 @@ try:
         age = player_table.iloc[i]['age']
         overunder = player_table.iloc[i]['Overvalued/Undervalued']
         overundervalue = player_table.iloc[i]['Over/Under Value'].astype(int)
-        
-        # Create 2 columns for profile
-        col1, col2, col3 = st.columns([1, 2, 2])
+        pace = player_table.iloc[i]['pace'].astype(int)
+        shooting = player_table.iloc[i]['shooting'].astype(int)
+        passing = player_table.iloc[i]['passing'].astype(int)
+        dribbling = player_table.iloc[i]['dribbling'].astype(int)
+        defending = player_table.iloc[i]['defending'].astype(int)
+        physic = player_table.iloc[i]['physic'].astype(int)
+        goalkeeping_diving = player_table.iloc[i]['goalkeeping_diving'].astype(int)
+        goalkeeping_handling = player_table.iloc[i]['goalkeeping_handling'].astype(int)
+        goalkeeping_kicking = player_table.iloc[i]['goalkeeping_kicking'].astype(int)
+        goalkeeping_positioning = player_table.iloc[i]['goalkeeping_positioning'].astype(int)
+        goalkeeping_reflexes = player_table.iloc[i]['goalkeeping_reflexes'].astype(int)
+        goalkeeping_speed = player_table.iloc[i]['goalkeeping_speed'].astype(int)
+
+        # Create 3 columns for profile
+        col1, col2, col3, col4 = st.columns(4)
 
         # st.number_input(label, min_value=None, max_value=None, value= )
-        col1.image(picture)
+        with col1:
+            st.image(picture)
         with col2:
             st.write(f'Name: {name}')
             st.write(f'Age: {age}')
@@ -207,8 +191,99 @@ try:
         with col3:
             st.write(f'Actual Price: € {actual_value:,}')
             st.write(f'Predicted Price: € {predicted_value:,}')
-            st.metric(f'{overunder} by', value=None, delta=f'{overundervalue:,}', delta_color = 'inverse')
+            if overundervalue>0:
+                st.write(f'{overunder} by: :red[{overundervalue:,}]')
+            elif overundervalue<0:
+                st.write(f'{overunder} by: :green[{overundervalue:,}]')
+        with col4:
+            if position == 'GK':
+                st.write(f'Diving: {goalkeeping_diving}')
+                st.write(f'Handling: {goalkeeping_handling}')
+                st.write(f'Kicking: {goalkeeping_kicking}')
+                st.write(f'Reflexes: {goalkeeping_reflexes}')
+                st.write(f'Speed: {goalkeeping_speed}')
+                st.write(f'Positioning: {goalkeeping_positioning}')
+            else:
+                st.write(f'Pace: {pace}')
+                st.write(f'Shooting: {shooting}')
+                st.write(f'Passing: {passing}')
+                st.write(f'Dribbling: {dribbling}')
+                st.write(f'Defending: {defending}')
+                st.write(f'Physicality: {physic}')                
         st.markdown("""---""")
-            
-except:
-    pass
+
+# GK section
+with tab5:
+    # Set input widgets
+    st.header('Goalkeeper Price Prediction')
+    st.subheader('Select Attributes')
+
+    # Create 6 columns for sliders
+    col1, col2, col3, col4, col5, col6 = st.columns(6)
+
+    # st.number_input(label, min_value=None, max_value=None, value= )
+    with col1:
+        diving = st.slider('Diving', 1, 99, 50)
+        age = st.slider('Age', 15, 50, 25)
+    with col2:
+        handling = st.slider('Handling', 1, 99, 50)
+    with col3:
+        kicking = st.slider('Kicking', 1, 99, 50)
+    with col4:
+        reflexes = st.slider('Reflexes', 1, 99, 50)
+    with col5:
+        speed = st.slider('Speed', 1, 99, 50)
+    with col6:
+        positioning = st.slider('Positioning', 1, 99, 50)
+    
+    # Generate prediction based on user selected attributes
+    y_pred_gk = rf_gk_model.predict([[age, diving, handling, kicking, positioning, reflexes, speed]]).astype(int)
+    st.metric('Predicted Price for Goalkeeper:', f'€ {y_pred_gk[0]:,}')
+    st.markdown("""---""")
+
+# Outfield Players section
+with tab5:
+    # Set input widgets
+    st.header('Outfield Player Price Prediction')
+    st.subheader('Select Attributes')
+
+    # Create 6 columns for sliders
+    col1, col2, col3, col4, col5, col6 = st.columns(6)
+
+    # st.number_input(label, min_value=None, max_value=None, value= )
+    with col1:
+        pace = st.slider('Pace', 1, 99, 50)
+        age = st.slider('Age', 15, 50, 25, key='age2')
+    with col2:
+        shooting = st.slider('Shooting', 1, 99, 50)
+    with col3:
+        passing = st.slider('Passing', 1, 99, 50)
+    with col4:
+        dribbling = st.slider('Dribbling', 1, 99, 50)
+    with col5:
+        defending = st.slider('Defending', 1, 99, 50)
+    with col6:
+        physicality = st.slider('Physicality', 1, 99, 50)
+
+    # Outfield players
+    y_pred_op = rf_op_model.predict([[age, pace, shooting, passing, dribbling, defending, physicality]]).astype(int)
+    st.metric('Predicted Price for Outfield Player:', f'€ {y_pred_op[0]:,}')
+    
+    # Centralise text
+    css='''
+    [data-testid="metric-container"] {
+        width: fit-content;
+        margin: auto;
+    }
+
+    [data-testid="metric-container"] > div {
+        width: fit-content;
+        margin: auto;
+    }
+
+    [data-testid="metric-container"] label {
+        width: fit-content;
+        margin: auto;
+    }
+    '''
+    st.markdown(f'<style>{css}</style>',unsafe_allow_html=True)

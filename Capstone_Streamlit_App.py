@@ -20,7 +20,7 @@ col1, col2 = st.columns([3,1])
 
 with col1:
     st.title('Football Player Price Prediction')
-    
+    st.write('• Dashboards are filtered for players above 80 Overall Rating to focus on top players')
 with col2:
     st.image('https://a4.espncdn.com/combiner/i?img=%2Fphoto%2F2022%2F1109%2Fsoc_fc_rank_16x9.jpg')
 
@@ -97,17 +97,19 @@ def load_data():
 rf_gk_model, rf_op_model, goalkeepers, outfieldplayers, players_final = load_data()
 
 # Create tabs
-tab1, tab2, tab3, tab4, tab5 = st.tabs(["Intro", "Goalkeepers", "Outfield Players", "Player Profiles", "Price Prediction"])
+tab1, tab2, tab3, tab4, tab5 = st.tabs(["Summary", "Goalkeepers", "Outfield Players", "Player Profiles", "Price Prediction"])
 
 # Intro tab1
 with tab1:
-    st.subheader('Dashboards are filtered for players above 80 Overall Rating to focus on top players.')
+    st.subheader('• Younger players tend to be overvalued, older players tend to be undervalued')
+    st.subheader('• The Premier League (England) has the most number of undervalued Goalkeepers')
+    st.subheader('• Serie A (Italy) has the most number of undervalued Outfield Players')
 
 # Goalkeepers Tableau tab2
 with tab2:
     def main():
         html_temp = """
-        <div class='tableauPlaceholder' id='viz1680441144546' style='position: static'>
+        <div class='tableauPlaceholder' id='viz1680441144546' style='position: relative'>
             <noscript>
                 <a href='#'>
                     <img alt='Goalkeepers' src='https://public.tableau.com/static/images/Go/Goalkeepers_16804303938650/Goalkeepers/1_rss.png' style='border: none'/>
@@ -137,17 +139,17 @@ with tab2:
             var vizElement = divElement.getElementsByTagName('object')[0];
             if (divElement.offsetWidth > 800) {
                 vizElement.style.width = '100%';
-                vizElement.style.height = (divElement.offsetWidth * 0.5) + 'px';
+                vizElement.style.height = (divElement.offsetWidth * 0.45) + 'px';
             } else if (divElement.offsetWidth > 500) {
                 vizElement.style.width = '100%';
-                vizElement.style.height = (divElement.offsetWidth * 0.5) + 'px';
+                vizElement.style.height = (divElement.offsetWidth * 0.75) + 'px';
             } else {
                 vizElement.style.width = '100%';
                 vizElement.style.height = '2000px';
             }
         </script>
         """
-        components.html(html_temp, width=None, height=1000, scrolling=False)
+        components.html(html_temp, width=None, height=1200, scrolling=False)
     if __name__ == "__main__":    
         main()
 
@@ -155,7 +157,7 @@ with tab2:
 with tab3:
     def main():
         html_temp = """
-        <div class='tableauPlaceholder' id='viz1680441224329' style='position: static'>
+        <div class='tableauPlaceholder' id='viz1680441224329' style='position: relative'>
           <noscript>
             <a href='#'>
               <img alt='Outfield Players ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Ou&#47;OutfieldPlayers&#47;OutfieldPlayers&#47;1_rss.png' style='border: none' />
@@ -182,7 +184,7 @@ with tab3:
             var vizElement = divElement.getElementsByTagName('object')[0];
             if (divElement.offsetWidth > 800) {
               vizElement.style.width = '100%';
-              vizElement.style.height = (divElement.offsetWidth * 0.5) + 'px';
+              vizElement.style.height = (divElement.offsetWidth * 0.45) + 'px';
             } else if (divElement.offsetWidth > 500) {
               vizElement.style.width = '100%';
               vizElement.style.height = (divElement.offsetWidth * 0.75) + 'px';
@@ -195,9 +197,10 @@ with tab3:
             vizElement.parentNode.insertBefore(scriptElement, vizElement);
           </script>
         </div>"""
-        components.html(html_temp, width=None, height=1000, scrolling=False)
+        components.html(html_temp, width=None, height=1200, scrolling=False)
     if __name__ == "__main__":    
         main()
+        
 
 # Player Profiles section
 with tab4:

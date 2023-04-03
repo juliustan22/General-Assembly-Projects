@@ -102,14 +102,18 @@ tab1, tab2, tab3, tab4, tab5 = st.tabs(["Summary", "Goalkeepers", "Outfield Play
 # Intro tab1
 with tab1:
     st.subheader('• Younger players tend to be overvalued, older players tend to be undervalued')
-    st.subheader('• The Premier League (England) has the most number of undervalued Goalkeepers')
-    st.subheader('• Serie A (Italy) has the most number of undervalued Outfield Players')
+    st.markdown("""---""")
+    st.subheader('• Germany has the most number of undervalued Goalkeepers (4)')
+    st.subheader('• Brazil has the most number of undervalued Outfield Players (21)')
+    st.markdown("""---""")
+    st.subheader('• Spain & Brazil have the most number of overvalued Goalkeepers (5)')
+    st.subheader('• Spain has the most number of overvalued Outfield Players (40)')
 
 # Goalkeepers Tableau tab2
 with tab2:
     def main():
         html_temp = """
-        <div class='tableauPlaceholder' id='viz1680486651064' style='position: relative'>
+        <div class='tableauPlaceholder' id='viz1680486651064' style='position: static'>
             <noscript>
                 <a href='#'>
                     <img alt='Goalkeepers ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Go&#47;Goalkeepers_16804303938650&#47;Goalkeepers&#47;1_rss.png' style='border: none' />
@@ -158,7 +162,7 @@ with tab2:
 with tab3:
     def main():
         html_temp = """
-        <div class='tableauPlaceholder' id='viz1680487906745' style='position: relative'>
+        <div class='tableauPlaceholder' id='viz1680487906745' style='position: static'>
           <noscript>
             <a href='#'>
               <img alt='Outfield Players ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Ou&#47;OutfieldPlayers&#47;OutfieldPlayers&#47;1_rss.png' style='border: none' />
